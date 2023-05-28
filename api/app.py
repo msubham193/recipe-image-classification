@@ -8,6 +8,9 @@ import numpy as np
 
 app = Flask(__name__)
 
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB limit
+
+
 model = tf.keras.models.load_model("recipe-classification.h5")
 class_names = ['burgers',
                'chicken biriyani',
