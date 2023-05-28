@@ -1,12 +1,12 @@
-from fastapi import FastAPI, File, UploadFile
-import uvicorn
+# from fastapi import FastAPI, File, UploadFile
+from flask import Flask, render_template, request, redirect, url_for
 from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 import numpy as np
 
 
-app = FastAPI()
+app = Flask(__name__)
 
 model = tf.keras.models.load_model("recipe-classification.h5")
 class_names = ['burgers',
@@ -29,9 +29,9 @@ class_names = ['burgers',
                'vada pav']
 
 
-@app.get("/ping")
-async def ping():
-    return class_names[0]
+@app.route("/")
+def ping():
+    return "Connection established !"
 
 
 def read_file_as_image(data):
@@ -40,9 +40,11 @@ def read_file_as_image(data):
     return resized_images
 
 
-@app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    image = read_file_as_image(await file.read())
+@app.route("/predict", methods=["POST"])
+def predict():
+    file = request.files['file']
+    data = file.read()
+    image = read_file_as_image(data)
     img_batch = np.expand_dims(image, 0)
     prediction = model.predict(img_batch)
     label = class_names[np.argmax(prediction[0])]
@@ -54,4 +56,4 @@ async def predict(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host='127.0.0.1', port=8000)
+    app.run()
