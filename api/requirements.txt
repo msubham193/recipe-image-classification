@@ -6,3 +6,4 @@ tensorflow-serving-api==2.5.0
 matplotlib
 numpy
 tensorflow
+protobuf==3.20
