@@ -6,4 +6,5 @@ tensorflow-serving-api==2.5.0
 matplotlib
 numpy
 tensorflow
-protobuf==3.20
+protobuf==3.19
+google-auth
